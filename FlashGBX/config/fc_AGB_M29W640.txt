@@ -12,6 +12,7 @@
 	"sector_size_from_cfi":true,
 	"chip_erase_timeout":120,
 	"enable_pullups":true,
+	"m29w640":true,
 	"command_set":"AMD",
 	"commands":{
 		"reset":[
