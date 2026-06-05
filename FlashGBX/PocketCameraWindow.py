@@ -34,7 +34,7 @@ class PocketCameraWindow(QtWidgets.QDialog):
 	]
 
 	def __init__(self, app, file=None, icon=None, config_path=".", app_path="."):
-		QtWidgets.QDialog.__init__(self)
+		QtWidgets.QDialog.__init__(self, app)
 		self.setAcceptDrops(True)
 		if icon is not None: self.setWindowIcon(QtGui.QIcon(icon))
 

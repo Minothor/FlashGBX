@@ -21,8 +21,8 @@ from .Formatter import Formatter
 from .IniSettings import IniSettings
 from .Flashcart import empty_flashcarts_map, has_3v_compatible_profile
 from .RomFileDMG import from_isx
-from .Mapper import (ConvertMapperToMapperType, ConvertMapperTypeToMapper, get_mbc_name, save_size_includes_rtc, compare_mbc)
-from .pyside import bitmap2pixmap
+from .Mapper import ConvertMapperToMapperType, ConvertMapperTypeToMapper, get_mbc_name, save_size_includes_rtc, compare_mbc
+from .pyside import bitmap2pixmap, GetQtVersion, IsDarkMode
 
 SAVE_EXTS = (".sav", ".srm", ".fla", ".eep")
 ROM_EXTS_DMG = (".gb", ".sgb", ".gbc", ".bin", ".isx")
@@ -50,27 +50,22 @@ class FlashGBX_GUI(QtWidgets.QMainWindow):
 
 	def __init__(self, args):
 		sys.excepthook = Logger.exception_hook
+		self.SETTINGS = IniSettings(path=args["config_path"] + os.sep + "settings.ini")
+		self.FLASHCARTS = args["flashcarts"]
+		self.PROGRESS = Progress(self.UpdateProgress, self.WaitProgress)
 
 		try:
+			if GetQtVersion() >= (6, 5, 0):
+				if self.SETTINGS.value("AllowDarkMode", default="enabled") == "disabled":
+					QtGui.QGuiApplication.styleHints().setColorScheme(QtCore.Qt.ColorScheme.Light)
 			if platform.system() == "Windows":
-				_use_dark_mode = False
-				try:
-					import winreg
-					_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize")
-					_use_dark_mode = winreg.QueryValueEx(_key, "AppsUseLightTheme")[0] == 0
-					winreg.CloseKey(_key)
-				except Exception:
-					pass
-				qt_app.setStyle("fusion" if _use_dark_mode else "windowsvista")
+				qt_app.setStyle("fusion" if IsDarkMode() else "windowsvista")
 		except:
 			pass
 
 		QtWidgets.QMainWindow.__init__(self)
 		AppContext.CONFIG_PATH = args['config_path']
 		AppContext.APP_PATH = args['app_path']
-		self.SETTINGS = IniSettings(path=args["config_path"] + "/settings.ini")
-		self.FLASHCARTS = args["flashcarts"]
-		self.PROGRESS = Progress(self.UpdateProgress, self.WaitProgress)
 
 		self.setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 5; }")
 		self.setWindowTitle("{:s} {:s}".format(AppInfo.NAME, AppInfo.VERSION))
@@ -1226,13 +1221,13 @@ class FlashGBX_GUI(QtWidgets.QMainWindow):
 			if isinstance(lang_name, tuple):
 				lang_name = lang_name[0]
 			msg += f"Translated to {lang_name} by {i18n.TRANSLATION_AUTHOR}<br><br>"
-		msg += "Acknowledgments and Contributors:<br><small>2358, 90sFlav, AcoVanConis, AdmirtheSableye, AlexiG, ALXCO-Hardware, AndehX, antPL, aronson, Ausar, bbsan, BennVenn, CaptainBean, ccs21, chobby, ClassicOldSong, Cliffback, CodyWick13, Corborg, Cristóbal, crizzlycruz, Crystal, Därk, Davidish, delibird_deals, DevDavisNunez, Diddy_Kong, djedditt, Dr-InSide, Duckman, dyf2007, easthighNerd, EchelonPrime, edo999, Eldram, Eli, Ell, EmperorOfTigers, endrift, Erba Verde, ethanstrax, eveningmoose, Falknör, FerrantePescara, frarees, fredemmott, Frost Clock, Gahr, gandalf1980, gboh, gekkio, Godan, Grender, HDR, Herax, Hiccup, hiks, howie0210, iamevn, Icesythe7, ide, infinest, inYourBackline, iyatemu, Jayro, Jenetrix, JFox, joyrider3774, jrharbort, JS7457, julgr, Kaede, kane159, KOOORAY, kscheel, kyokohunter, Leitplanke, litlemoran, LovelyA72, Lu, Luca DS, LucentW, luxkiller65, manuelcm1, marv17, Merkin, metroid-maniac, Mr_V, Mufsta, numma_cway, olDirdey, orangeglo, paarongiroux, Paradoxical, Pese, Rairch, Raphaël BOICHOT, redalchemy, RetroGorek, RevZ, RibShark, s1cp, Satumox, Sgt.DoudouMiel, SH, Shinichi999, Sillyhatday, simonK, Sithdown, skite2001, Smelly-Ghost, Sonikks, Squiddy, Stitch, Super Maker, t5b6_de, Tauwasser, TheNFCookie, Timville, twitnic, velipso, Veund, voltagex, Voultar, Warez Waldo, wickawack, Winter1760, Wkr, x7l7j8cc, xactoes, xukkorz, yosoo, Zeii, Zelante, zipplet, Zoo, zvxr</small>"
+		msg += "Acknowledgments and Contributors:<br><small>2358, 90sFlav, AcoVanConis, AdmirtheSableye, AlexiG, ALXCO-Hardware, AndehX, antPL, aronson, Ausar, bbsan, BennVenn, Boeuffy, CaptainBean, ccs21, chobby, ClassicOldSong, Cliffback, CodyWick13, Corborg, Cristóbal, crizzlycruz, Crystal, Därk, Davidish, delibird_deals, DevDavisNunez, Diddy_Kong, djedditt, Dr-InSide, Duckman, dyf2007, easthighNerd, EchelonPrime, edo999, Eldram, Eli, Ell, EmperorOfTigers, endrift, Erba Verde, ethanstrax, eveningmoose, Falknör, FerrantePescara, frarees, fredemmott, Frost Clock, Gahr, gandalf1980, gboh, gekkio, Godan, Goon, Grender, HDR, Herax, Hiccup, hiks, howie0210, iamevn, Icesythe7, ide, infinest, inYourBackline, iyatemu, Jayro, Jenetrix, JFox, joyrider3774, jrharbort, JS7457, julgr, Kaede, kane159, KOOORAY, kscheel, kyokohunter, Leitplanke, litlemoran, LovelyA72, Lu, Luca DS, LucentW, luxkiller65, manuelcm1, marv17, Merkin, metroid-maniac, Mr_V, Mufsta, numma_cway, olDirdey, orangeglo, paarongiroux, Paradoxical, Pese, Rairch, Raphaël BOICHOT, redalchemy, RetroGorek, RevZ, RibShark, s1cp, Satumox, Sgt.DoudouMiel, SH, Shinichi999, Sillyhatday, simonK, Sithdown, skite2001, Smelly-Ghost, Sonikks, Squiddy, Stitch, Super Maker, t5b6_de, Tauwasser, TheNFCookie, Timville, twitnic, velipso, Veund, voltagex, Voultar, Warez Waldo, wickawack, Winter1760, Wkr, x7l7j8cc, xactoes, xukkorz, yosoo, Zeii, Zelante, zipplet, Zoo, zvxr</small>"
 		QtWidgets.QMessageBox.information(self, "{:s} {:s}".format(AppInfo.NAME, AppInfo.VERSION), msg, QtWidgets.QMessageBox.Ok)
 
 	def AboutGameDB(self):
 		msg = __("FlashGBX uses a game database that is based on the ongoing efforts of the No-Intro project. Visit {url} for more information.", url="<a href=\"https://no-intro.org/\">https://no-intro.org/</a>") + "<br><br>"
 		msg += __("No-Intro databases referenced for this version of FlashGBX:") + "<br>"
-		msg += "• Nintendo - Game Boy (20260602-070215)<br>• Nintendo - Game Boy Advance (20260602-094414)<br>• Nintendo - Game Boy Advance (Video) (20260522-144016)<br>• Nintendo - Game Boy Color (20260602-232612)" # No-Intro DBs
+		msg += "• Nintendo - Game Boy (20260605-002844)<br>• Nintendo - Game Boy Advance (20260602-094414)<br>• Nintendo - Game Boy Advance (Video) (20260522-144016)<br>• Nintendo - Game Boy Color (20260605-010629)" # No-Intro DBs
 		QtWidgets.QMessageBox.information(self, "FlashGBX {:s}".format(AppInfo.VERSION), msg, QtWidgets.QMessageBox.Ok)
 
 	def _GetDeviceSupportData(self):

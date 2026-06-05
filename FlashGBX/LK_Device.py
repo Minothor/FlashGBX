@@ -3512,6 +3512,7 @@ class LK_Device(ABC):
 			self.SetProgress({"action":"INITIALIZE", "method":action, "size":save_size+extra_size})
 
 		buffer_offset = 0
+		max_length = 64 if self.FW["pcb_name"] in ("GBxCart RW", "") else self.MAX_BUFFER_READ
 		for bank in range(0, ram_banks):
 			if self.MODE == "DMG":
 				if _mbc.GetName() == "MBC6" and bank > 7:
@@ -3557,7 +3558,6 @@ class LK_Device(ABC):
 						dprint("Unknown bank switching method")
 					time.sleep(0.05)
 
-			max_length = self.MAX_BUFFER_READ # I don’t remember why this was hardcoded to 64 before
 			dprint("start_address=0x{:X}, end_address=0x{:X}, buffer_len=0x{:X}, buffer_offset=0x{:X}".format(start_address, end_address, buffer_len, buffer_offset))
 			pos = start_address
 			while pos < end_address:
@@ -3576,6 +3576,7 @@ class LK_Device(ABC):
 						xe = 2
 					else:
 						xe = 1
+					_read_failed = False
 					for x in range(0, xe):
 						if x == 1:
 							self.NO_PROG_UPDATE = True
@@ -3608,9 +3609,14 @@ class LK_Device(ABC):
 							else:
 								dprint("Received 0x{:X} bytes instead of 0x{:X} bytes from the device at position 0x{:X}! Decreasing maximum transfer buffer length to 0x{:X}.".format(len(in_temp[x]), buffer_len, len(buffer), max_length >> 1))
 								max_length >>= 1
+								_read_failed = True
 							self.DEVICE.reset_input_buffer()
 							self.DEVICE.reset_output_buffer()
-							continue
+							if _read_failed:
+								break
+
+					if _read_failed:
+						continue
 
 					if xe == 2 and in_temp[0] != in_temp[1]:
 						print(ANSI.RED + __("Error: Inconsistent reads detected.") + ANSI.RESET)

@@ -483,7 +483,7 @@ try:
 		PCB_VER = ""
 
 		def __init__(self, app, app_path, file=None, icon=None, device=None):
-			QtWidgets.QDialog.__init__(self)
+			QtWidgets.QDialog.__init__(self, app)
 			if icon is not None: self.setWindowIcon(QtGui.QIcon(icon))
 			self.setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 5; }")
 			self.setWindowTitle("FlashGBX – " + __("Firmware Updater for {device_name}", device_name="Joey Jr"))

@@ -1,5 +1,5 @@
 # Release notes
-### v5.0 (released 2026-06-03)
+### v5.0/v5.0.1 (released 2026-06-06)
 - Added support for the [Game Bub](https://gamebub.net/) hardware device *(thanks Eli)*
 - Added a new launcher for the Windows pre-built package that hides the terminal window
 - Now supports gettext-style i18n localizations (see locale folder for the template)
@@ -12,7 +12,10 @@
 - Added support for ACAM_GL04G10_2G_204 with GL04GR00FHCR2 *(thanks CaptainBean)*
 - Added Dark Mode for Windows users *(thanks marv17 for the suggestion)*
 - Updated the Game Boy and Game Boy Advance lookup databases for save types, ROM sizes and checksums
-- Lots of minor improvements and some bug fixes
+- Added an option to force-disable dark mode via settings.ini `AllowDarkMode`
+- Fixed an issue with the Interactive Console (the `ws` command did not work) *(thanks Goon)*
+- Fixed an issue with some GBxCart RW devices not being able to read save data correctly *(thanks Boeuffy)*
+- Lots of minor improvements and bug fixes
 
 ### v4.6 (released 2026-01-27)
 - Added support for a new Game Boy Advance bootleg flash save chip (SST39VF6401B) used on “Quetzal” bootlegs *(thanks Grender, marv17, Pese)*

@@ -58,6 +58,12 @@ class InteractiveConsole:
 
 	def execute_command(self, cmdline):
 		try:
+			return self._execute_command_inner(cmdline)
+		except Exception:
+			return False
+
+	def _execute_command_inner(self, cmdline):
+		try:
 			parts = shlex.split(cmdline)
 		except ValueError:
 			self.on_output(__("Invalid command syntax."))
@@ -148,6 +154,20 @@ class InteractiveConsole:
 					data = bytearray(_raw)[:size]
 					self.last_read_data = data
 					self.hexdump(address, data)
+				return True
+
+			if command == "ws" and len(parts) == 3:
+				try:
+					address = int(parts[1], 16)
+					if re.fullmatch(r"[01]{8}", parts[2]):
+						value = int(parts[2], 2)
+					else:
+						value = int(parts[2], 16)
+				except ValueError:
+					self.on_output(__("Invalid input. Use hexadecimal or 8-bit binary for the value."))
+					return True
+				self.CONN._cart_write(address, value, sram=True)
+				self.on_output(__("OK"))
 				return True
 
 			if command == "wf" and len(parts) == 3:

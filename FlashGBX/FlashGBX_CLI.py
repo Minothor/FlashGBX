@@ -177,14 +177,14 @@ class FlashGBX_CLI():
 			pc = PocketCamera()
 			if pc.LoadFile(args.path) != False:
 				pc.SetPalette(PocketCamera.PALETTE_NAMES.index(args.gbcamera_palette))
-				file = os.path.splitext(args.path)[0] + "/IMG_PC00.png"
+				file = os.path.splitext(args.path)[0] + os.sep + "IMG_PC00.png"
 				if os.path.isfile(os.path.dirname(file)):
 					print("\n" + ANSI.RED + __("Can’t save pictures at location “{path}”.", path=os.path.abspath(os.path.dirname(file))) + ANSI.RESET)
 					return 1
 				if not os.path.isdir(os.path.dirname(file)):
 					os.makedirs(os.path.dirname(file))
 				for i in range(0, 32):
-					file = os.path.splitext(args.path)[0] + "/IMG_PC{:02d}".format(i+1) + "." + args.gbcamera_outfile_format
+					file = os.path.splitext(args.path)[0] + os.sep + "IMG_PC{:02d}".format(i+1) + "." + args.gbcamera_outfile_format
 					pc.ExportPicture(i, file, scale=1)
 				print(__("The pictures from “{save_file}” were extracted to “{destination}”.", save_file=os.path.abspath(args.path), destination=os.path.abspath(os.path.dirname(file)) + os.sep + "IMG_PC**.{:s}".format(args.gbcamera_outfile_format)))
 			else:
@@ -965,7 +965,7 @@ class FlashGBX_CLI():
 
 		if args.path != "auto":
 			if os.path.isdir(args.path):
-				path = args.path + "/" + path
+				path = args.path + os.sep + path
 			else:
 				path = args.path
 
@@ -1303,7 +1303,7 @@ class FlashGBX_CLI():
 
 		if args.path != "auto":
 			if os.path.isdir(args.path):
-				path = args.path + "/" + path
+				path = args.path + os.sep + path
 			else:
 				path = args.path
 

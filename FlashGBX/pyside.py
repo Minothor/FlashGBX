@@ -253,6 +253,19 @@ elif platform.system() == "Linux":
 
 __all__ = ['QtCore', 'QtWidgets', 'QtGui', 'QApplication', 'QDesktopWidget', 'QActionGroup']
 
+def GetQtVersion():
+	return tuple(map(int, QtCore.qVersion().split(".")))
+
+def IsDarkMode():
+	if GetQtVersion() < (6, 5, 0):
+		return False
+	try:
+		scheme = QtGui.QGuiApplication.styleHints().colorScheme()
+		if scheme == QtCore.Qt.ColorScheme.Dark:
+			return True
+	except Exception:
+		pass
+	return False
 
 def bitmap2pixmap(data, scale_factor=4):
 	try:

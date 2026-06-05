@@ -462,7 +462,7 @@ try:
 		PCB_VER = ""
 
 		def __init__(self, app, app_path, file=None, icon=None, device=None):
-			QtWidgets.QDialog.__init__(self)
+			QtWidgets.QDialog.__init__(self, app)
 			if icon is not None: self.setWindowIcon(QtGui.QIcon(icon))
 			self.setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 5; }")
 			self.setWindowTitle(AppInfo.NAME + " – " + __("Firmware Updater for {device_name}", device_name="GBxCart RW"))
@@ -724,7 +724,7 @@ try:
 		FW_FILES = {"v1.1/v1.2":"fw_GBxCart_RW_v1_1_v1_2.zip", "v1.3":"fw_GBxCart_RW_v1_3.zip", "XMAS v1.0":"fw_GBxCart_RW_XMAS_v1_0.zip", "Mini v1.0":"fw_GBxCart_RW_Mini_v1_0.zip"}
 
 		def __init__(self, app, app_path, file=None, icon=None, device=None):
-			QtWidgets.QDialog.__init__(self)
+			QtWidgets.QDialog.__init__(self, app)
 			if icon is not None: self.setWindowIcon(QtGui.QIcon(icon))
 			self.setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 5; }")
 			self.APP = app
